@@ -16,6 +16,7 @@ let editID = "";
 form.addEventListener("submit", addItem);
 // clear items
 clearBtn.addEventListener("click", clearItems);
+
 // ****** FUNCTIONS **********
 function addItem(e) {
     e.preventDefault();
@@ -42,6 +43,12 @@ function addItem(e) {
           </button>
         </div>`;
 
+        const deleteBtn = element.querySelector(".delete-btn");
+        const editBtn = element.querySelector(".edit-btn");
+
+        deleteBtn.addEventListener("click", deleteItem);
+        editBtn.addEventListener("click", editItem);
+
         // append chield
         list.appendChild(element);
 
@@ -58,7 +65,11 @@ function addItem(e) {
         setBackToDefault();
 
     } else if (value && editFlag) {
-        console.log("editing"); 
+        editElement.innerHTML = value;
+        displayAlert('value changed', 'success');
+        // edit local Storage
+        editLocalStorage(editID,value)
+        setBackToDefault();
 
     } else {
         displayAlert("please enter value", "danger")
@@ -87,8 +98,34 @@ function clearItems() {
     container.classList.remove("show-container");
     displayAlert('empty list', 'danger');
     setBackToDefault();
-    localStorage.removeItem('list');
+    // localStorage.removeItem('list');
 
+};
+
+// // delete Function
+function deleteItem(e) {
+    const element = e.currentTarget.parentElement.parentElement;
+    const id = element.dataset.id;
+    list.removeChild(element);
+    if (list.children.length === 0) {
+        container.classList.remove("show-container");
+    }
+    displayAlert("item removed", "danger");
+    setBackToDefault();
+    // remove form localStorage
+    // removeFromLocalStorage(id);
+};
+// // edit Function
+function editItem(e) {
+    const element = e.currentTarget.parentElement.parentElement;
+
+    // set edit item
+    editElement = e.currentTarget.parentElement.previousElementSibling;
+    // set form value
+    grocery.value = editElement.innerHTML;
+    editFlag = true;
+    editID = element.dataset.id;
+    submitBtn.textContent = "edit";
 };
 // set back to default
 function setBackToDefault() {
@@ -100,7 +137,11 @@ function setBackToDefault() {
 
    // ****** LOCAL STORAGE **********
 function addToLocalStorage(id, value) {
-    console.log("added to local storage");
+    // console.log("added to local storage");
 }
+function removeFromLocalStorage(id) {
+
+}
+function editLocalStorage(id, value) {} 
 
 // ****** SETUP ITEMS **********
